@@ -7,6 +7,6 @@
         public string? Resume { get; set; }
         public string? Infos { get; set; }
         public string? Logo { get; set; }
-        public IEnumerable<Module>? Modules { get; set; }
+        public ICollection<Module>? Modules { get; set; }
     }
 }
