@@ -23,9 +23,9 @@ namespace TPServiceScolarite.Controllers
         // GET: Modules
         public async Task<IActionResult> Index()
         {
-              return _context.Modules != null ? 
-                          View(await _context.Modules.ToListAsync()) :
-                          Problem("Entity set 'ScolariteDbEntities.Modules'  is null.");
+            return _context.Modules != null ?
+                        View(await _context.Modules.ToListAsync()) :
+                        Problem("Entity set 'ScolariteDbEntities.Modules'  is null.");
         }
 
         // GET: Modules/Details/5
@@ -57,25 +57,27 @@ namespace TPServiceScolarite.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nom,Resume,Infos,Logo")] Module @module, IFormFile Logo)
+        public async Task<IActionResult> Create([Bind("Id,Nom,Resume,Infos,Logo")] Module @module, IFormFile? Logo)
         {
             if (ModelState.IsValid)
             {
+                if (Logo != null)
+                {
+                    string rootPath = _webHostEnvironment.WebRootPath;
+                    string fileName = Path.GetFileNameWithoutExtension(Logo.FileName) + "_" +
+                               Guid.NewGuid() +
+                               Path.GetExtension(Logo.FileName);
+                    string path = Path.Combine(rootPath + "/photoLogoModule/", fileName);
 
-                string rootPath = _webHostEnvironment.WebRootPath;
-                string fileName = Path.GetFileNameWithoutExtension(Logo.FileName) + "_" +
-                           Guid.NewGuid() +
-                           Path.GetExtension(Logo.FileName);
-                string path = Path.Combine(rootPath + "/photoLogoModule/", fileName);
-
-                var fileStream = new FileStream(path, FileMode.Create);
-                await Logo.CopyToAsync(fileStream);
-                fileStream.Close();
-                module.Logo = fileName;
+                    var fileStream = new FileStream(path, FileMode.Create);
+                    await Logo.CopyToAsync(fileStream);
+                    fileStream.Close();
+                    module.Logo = fileName;
+                }
 
                 _context.Add(@module);
                 await _context.SaveChangesAsync();
-                
+
                 return RedirectToAction(nameof(Index));
             }
             return View(@module);
@@ -102,7 +104,7 @@ namespace TPServiceScolarite.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,Resume,Infos,Logo")] Module @module , IFormFile? Logo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,Resume,Infos,Logo")] Module @module, IFormFile? Logo)
         {
             if (id != @module.Id)
             {
@@ -177,14 +179,14 @@ namespace TPServiceScolarite.Controllers
             {
                 _context.Modules.Remove(@module);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ModuleExists(int id)
         {
-          return (_context.Modules?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Modules?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

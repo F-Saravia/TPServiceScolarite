@@ -23,9 +23,9 @@ namespace TPServiceScolarite.Controllers
         // GET: Parcours
         public async Task<IActionResult> Index()
         {
-            return _context.Parcours != null ?
-                        View(await _context.Parcours.ToListAsync()) :
-                        Problem("Entity set 'ScolariteDbEntities.Parcours'  is null.");
+            return _context.Parcours != null
+                ? View(await _context.Parcours.ToListAsync())
+                : Problem("Entity set 'ScolariteDbEntities.Parcours'  is null.");
         }
 
         // GET: Parcours/Details/5
@@ -49,6 +49,7 @@ namespace TPServiceScolarite.Controllers
         // GET: Parcours/Create
         public IActionResult Create()
         {
+            ViewBag.Modules = _context.Modules;
             return View();
         }
 
@@ -57,21 +58,24 @@ namespace TPServiceScolarite.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nom,Resume,Infos,Logo")] Parcour parcour, IFormFile Logo)
+        public async Task<IActionResult> Create([Bind("Id,Nom,Resume,Infos, Logo, Modules")] Parcour parcour, IFormFile? Logo)
         {
             if (ModelState.IsValid)
             {
-                string rootPath = _webHostEnvironment.WebRootPath;
-                string fileName = Path.GetFileNameWithoutExtension(Logo.FileName) + "_" +
-                           Guid.NewGuid() +
-                           Path.GetExtension(Logo.FileName);
-                string path = Path.Combine(rootPath + "/photoLogoParcour/", fileName);
+                if (Logo != null)
+                {
+                    string rootPath = _webHostEnvironment.WebRootPath;
+                    string fileName = Path.GetFileNameWithoutExtension(Logo.FileName) + "_" +
+                               Guid.NewGuid() +
+                               Path.GetExtension(Logo.FileName);
+                    string path = Path.Combine(rootPath + "/photoLogoParcour/", fileName);
 
-                var fileStream = new FileStream(path, FileMode.Create);
-                await Logo.CopyToAsync(fileStream);
-                fileStream.Close();
-                parcour.Logo = fileName;
-
+                    var fileStream = new FileStream(path, FileMode.Create);
+                    await Logo.CopyToAsync(fileStream);
+                    fileStream.Close();
+                    parcour.Logo = fileName;
+                }
+                
                 _context.Add(parcour);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
