@@ -23,9 +23,9 @@ namespace TPServiceScolarite.Controllers
         // GET: Parcours
         public async Task<IActionResult> Index()
         {
-              return _context.Parcours != null ? 
-                          View(await _context.Parcours.ToListAsync()) :
-                          Problem("Entity set 'ScolariteDbEntities.Parcours'  is null.");
+            return _context.Parcours != null ?
+                        View(await _context.Parcours.ToListAsync()) :
+                        Problem("Entity set 'ScolariteDbEntities.Parcours'  is null.");
         }
 
         // GET: Parcours/Details/5
@@ -100,7 +100,7 @@ namespace TPServiceScolarite.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,Resume,Infos,Logo")] Parcour parcour)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,Resume,Infos, Logo")] Parcour parcour, IFormFile? Logo)
         {
             if (id != parcour.Id)
             {
@@ -111,6 +111,20 @@ namespace TPServiceScolarite.Controllers
             {
                 try
                 {
+                    if (Logo != null)
+                    {
+                        string rootPath = _webHostEnvironment.WebRootPath;
+                        string fileName = Path.GetFileNameWithoutExtension(Logo.FileName) + "_" +
+                                   Guid.NewGuid() +
+                                   Path.GetExtension(Logo.FileName);
+                        string path = Path.Combine(rootPath + "/photoLogoParcour/", fileName);
+
+                        var fileStream = new FileStream(path, FileMode.Create);
+                        await Logo.CopyToAsync(fileStream);
+                        fileStream.Close();
+                        parcour.Logo = fileName;
+                    }
+
                     _context.Update(parcour);
                     await _context.SaveChangesAsync();
                 }
@@ -162,14 +176,14 @@ namespace TPServiceScolarite.Controllers
             {
                 _context.Parcours.Remove(parcour);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ParcourExists(int id)
         {
-          return (_context.Parcours?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Parcours?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
