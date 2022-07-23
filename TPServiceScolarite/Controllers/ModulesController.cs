@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using TPServiceScolarite.Models;
 
 namespace TPServiceScolarite.Controllers
 {
+    [Authorize]
     public class ModulesController : Controller
     {
         private readonly ScolariteDbEntities _context;
@@ -21,6 +23,7 @@ namespace TPServiceScolarite.Controllers
         }
 
         // GET: Modules
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return _context.Modules != null ?
@@ -29,6 +32,7 @@ namespace TPServiceScolarite.Controllers
         }
 
         // GET: Modules/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Modules == null)

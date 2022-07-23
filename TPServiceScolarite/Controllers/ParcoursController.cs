@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using TPServiceScolarite.Models;
 
 namespace TPServiceScolarite.Controllers
 {
+    [Authorize]
     public class ParcoursController : Controller
     {
         private readonly ScolariteDbEntities _context;
@@ -21,6 +23,7 @@ namespace TPServiceScolarite.Controllers
         }
 
         // GET: Parcours
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return _context.Parcours != null
@@ -29,6 +32,7 @@ namespace TPServiceScolarite.Controllers
         }
 
         // GET: Parcours/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Parcours == null)
@@ -75,7 +79,7 @@ namespace TPServiceScolarite.Controllers
                     fileStream.Close();
                     parcour.Logo = fileName;
                 }
-                
+
                 _context.Add(parcour);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -92,10 +96,7 @@ namespace TPServiceScolarite.Controllers
             }
 
             var parcour = await _context.Parcours.FindAsync(id);
-            if (parcour == null)
-            {
-                return NotFound();
-            }
+            if (parcour == null) { return NotFound(); }
             return View(parcour);
         }
 
@@ -106,10 +107,7 @@ namespace TPServiceScolarite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,Resume,Infos, Logo")] Parcour parcour, IFormFile? Logo)
         {
-            if (id != parcour.Id)
-            {
-                return NotFound();
-            }
+            if (id != parcour.Id) { return NotFound(); }
 
             if (ModelState.IsValid)
             {
