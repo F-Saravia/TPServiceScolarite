@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TPServiceScolarite.Models;
 
@@ -11,9 +12,10 @@ using TPServiceScolarite.Models;
 namespace TPServiceScolarite.Migrations
 {
     [DbContext(typeof(ScolariteDbEntities))]
-    partial class ScolariteDbEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20220723175524_champsNomsObligatoires")]
+    partial class champsNomsObligatoires
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
