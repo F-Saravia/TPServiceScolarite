@@ -9,7 +9,6 @@
 <h4>@Model.Nom</h4>
 
 <div>
-    <h4>Parcour</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -40,19 +39,17 @@
             @Html.DisplayNameFor(model => model.Modules)
         </dt>
         <dd class="col-sm-10">
-            @if (Model.Modules != null)
+            @if (Model.Modules == null)
+            {
+                <p>Aucun module n'est associé à ce parcours</p>
+            }
+            else
             {
                 <table class="table">
                     <thead>
                         <tr>
                             <th>
                                 @Html.DisplayNameFor(model => model.Nom)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Resume)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Infos)
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.Logo)
@@ -63,27 +60,17 @@
                     <tbody>
                         @foreach (var item in Model.Modules)
                         {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Nom)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Resume)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Infos)
-                            </td>
-                            <td>
-                                <img src="/photoLogoModule/@item.Logo" alt="logo du module @item.Nom: @item.Logo" height="120" width="80" />
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Nom)
+                                </td>
+                                <td>
+                                    <img src="/photoLogoModule/@item.Logo" alt="logo du module @item.Nom: @item.Logo" height="120" width="80" />
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
-            }
-            else
-            {
-                <p>Aucun module n'est associé à ce parcours</p>
             }
         </dd>
 

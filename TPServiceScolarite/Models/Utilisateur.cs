@@ -7,8 +7,6 @@ namespace TPServiceScolarite.Models
     // (Nom, Prenom, Mail, Adresse)
     public class Utilisateur
     {
-        private ScolariteDbEntities scolariteDb = new ScolariteDbEntities(new DbContextOptions<ScolariteDbEntities>() );
-        
         public int Id { get; set; }
         public string Email { get; set; }
         public string? Nom { get; set; }
